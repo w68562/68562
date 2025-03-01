@@ -1,0 +1,104 @@
+open System
+open System.Text.RegularExpressions
+
+// Funkcja licząca słowa w tekście
+let countWords (text: string) =
+    let words = Regex.Matches(text, "\w+") |> Seq.cast<Match> |> Seq.map (fun m -> m.Value)
+    Seq.length words
+
+// Funkcja licząca liczbę znaków bez spacji
+let countCharsWithoutSpaces (text: string) =
+    text.Replace(" ", "").Length
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Wprowadź tekst: "
+    let text = Console.ReadLine()
+    
+    let wordCount = countWords text
+    let charCount = countCharsWithoutSpaces text
+    
+    printfn "Liczba słów: %d" wordCount
+    printfn "Liczba znaków (bez spacji): %d" charCount
+    
+    0 // Kod zakończenia programu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+open System
+
+// Funkcja sprawdzająca, czy tekst jest palindromem
+let isPalindrome (text: string) =
+    let cleanedText = text.Replace(" ", "").ToLower()
+    cleanedText = String(cleanedText.ToCharArray() |> Array.rev)
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Wprowadź tekst: "
+    let input = Console.ReadLine()
+    
+    if isPalindrome input then
+        printfn "Tekst jest palindromem."
+    else
+        printfn "Tekst nie jest palindromem."
+    
+    0 // Kod zakończenia programu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+open System
+open System.Text.RegularExpressions
+
+// Funkcja sprawdzająca, czy tekst jest palindromem
+let isPalindrome (text: string) =
+    let cleanedText = text.Replace(" ", "").ToLower()
+    cleanedText = String(cleanedText.ToCharArray() |> Array.rev)
+
+// Funkcja usuwająca duplikaty z listy słów
+let removeDuplicates (words: string list) =
+    words |> List.distinct
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Wprowadź tekst: "
+    let input = Console.ReadLine()
+    
+    if isPalindrome input then
+        printfn "Tekst jest palindromem."
+    else
+        printfn "Tekst nie jest palindromem."
+    
+    printf "Wprowadź słowa oddzielone spacjami: "
+    let words = Console.ReadLine().Split(' ') |> Array.toList
+    let uniqueWords = removeDuplicates words
+    
+    printfn "Unikalne słowa: %A" uniqueWords
+    
+    0 // Kod zakończenia programu
