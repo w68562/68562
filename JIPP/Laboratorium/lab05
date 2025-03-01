@@ -1,0 +1,84 @@
+open System
+
+// Prosta funkcja rekurencyjna obliczająca n-ty wyraz ciągu Fibonacciego
+let rec fibonacci n =
+    match n with
+    | 0 -> 0
+    | 1 -> 1
+    | _ -> fibonacci (n - 1) + fibonacci (n - 2)
+
+// Funkcja rekurencyjna zoptymalizowana ogonowo
+let fibonacciTailRecursive n =
+    let rec fibHelper a b count =
+        match count with
+        | 0 -> a
+        | _ -> fibHelper b (a + b) (count - 1)
+    fibHelper 0 1 n
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Podaj n: "
+    let n = Console.ReadLine() |> int
+    
+    printfn "Fibonacci(%d) = %d (rekurencyjnie)" n (fibonacci n)
+    printfn "Fibonacci(%d) = %d (ogonowa rekurencja)" n (fibonacciTailRecursive n)
+    
+    0 // Kod zakończenia programu
+
+
+
+
+
+
+
+
+
+
+
+
+open System
+
+// Definicja drzewa binarnego
+type BinaryTree<'T> =
+    | Empty
+    | Node of 'T * BinaryTree<'T> * BinaryTree<'T>
+
+// Rekurencyjna funkcja wyszukująca element w drzewie binarnym
+let rec searchRecursive value tree =
+    match tree with
+    | Empty -> false
+    | Node(v, left, right) ->
+        if value = v then true
+        else searchRecursive value left || searchRecursive value right
+
+// Iteracyjna funkcja wyszukująca element w drzewie binarnym
+let searchIterative value tree =
+    let rec loop stack =
+        match stack with
+        | [] -> false
+        | Empty :: rest -> loop rest
+        | Node(v, left, right) :: rest ->
+            if value = v then true
+            else loop (left :: right :: rest)
+    loop [tree]
+
+// Przykładowe drzewo
+let sampleTree =
+    Node(10,
+        Node(5, Node(2, Empty, Empty), Node(7, Empty, Empty)),
+        Node(15, Node(12, Empty, Empty), Node(20, Empty, Empty)))
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Podaj wartość do wyszukania: "
+    let value = Console.ReadLine() |> int
+    
+    let foundRecursive = searchRecursive value sampleTree
+    let foundIterative = searchIterative value sampleTree
+    
+    printfn "Znaleziono (rekurencyjnie): %b" foundRecursive
+    printfn "Znaleziono (iteracyjnie): %b" foundIterative
+    
+    0 // Kod zakończenia programu
