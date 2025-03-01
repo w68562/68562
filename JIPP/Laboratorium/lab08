@@ -1,0 +1,65 @@
+open System
+
+// Klasa reprezentująca książkę
+type Book(title: string, author: string, pages: int) =
+    member this.Title = title
+    member this.Author = author
+    member this.Pages = pages
+    member this.GetInfo() = sprintf "%s by %s, %d pages" this.Title this.Author this.Pages
+
+// Klasa reprezentująca użytkownika
+type User(name: string) =
+    let mutable borrowedBooks = []
+    member this.Name = name
+    member this.BorrowedBooks = borrowedBooks
+    member this.BorrowBook(book: Book) = borrowedBooks <- book :: borrowedBooks
+    member this.ReturnBook(book: Book) = borrowedBooks <- List.filter ((<>) book) borrowedBooks
+    member this.ListBorrowedBooks() = borrowedBooks |> List.map (fun b -> b.GetInfo()) |> String.concat ", "
+
+// Klasa reprezentująca bibliotekę
+type Library() =
+    let mutable books = []
+    member this.AddBook(book: Book) = books <- book :: books
+    member this.RemoveBook(book: Book) = books <- List.filter ((<>) book) books
+    member this.ListBooks() = books |> List.map (fun b -> b.GetInfo()) |> String.concat ", "
+
+// Definicja listy łączonej
+type LinkedList<'T> =
+    | Empty
+    | Node of 'T * LinkedList<'T>
+
+// Funkcja konwertująca zwykłą listę na listę łączoną
+let rec toLinkedList (lst: List<'T>) =
+    match lst with
+    | [] -> Empty
+    | head :: tail -> Node(head, toLinkedList tail)
+
+// Program główny
+[<EntryPoint>]
+let main argv =
+    let library = Library()
+    let user = User("Jan Kowalski")
+    
+    let book1 = Book("Wiedźmin", "Andrzej Sapkowski", 300)
+    let book2 = Book("Duma i uprzedzenie", "Jane Austen", 250)
+    
+    library.AddBook(book1)
+    library.AddBook(book2)
+    
+    printfn "Dostępne książki: %s" (library.ListBooks())
+    
+    user.BorrowBook(book1)
+    library.RemoveBook(book1)
+    printfn "Jan Kowalski wypożyczył: %s" (user.ListBorrowedBooks())
+    printfn "Dostępne książki po wypożyczeniu: %s" (library.ListBooks())
+    
+    user.ReturnBook(book1)
+    library.AddBook(book1)
+    printfn "Książki po zwrocie: %s" (library.ListBooks())
+    
+    // Testowanie funkcji konwersji listy na listę łączoną
+    let sampleList = [1; 2; 3; 4; 5]
+    let linkedList = toLinkedList sampleList
+    printfn "Lista łączona została utworzona."
+    
+    0
