@@ -1,0 +1,141 @@
+open System
+
+// Definicja rekordu do przechowywania danych użytkownika
+type UserData = { Weight: float; Height: float }
+
+// Funkcja obliczająca BMI
+let calculateBMI (user: UserData) =
+    let heightInMeters = user.Height / 100.0
+    user.Weight / (heightInMeters ** 2.0)
+
+// Funkcja określająca kategorię BMI
+let categorizeBMI bmi =
+    match bmi with
+    | _ when bmi < 16.0 -> "Wygłodzenie"
+    | _ when bmi < 17.0 -> "Wychudzenie"
+    | _ when bmi < 18.5 -> "Niedowaga"
+    | _ when bmi < 25.0 -> "Prawidłowa waga"
+    | _ when bmi < 30.0 -> "Nadwaga"
+    | _ when bmi < 35.0 -> "Otyłość I stopnia"
+    | _ when bmi < 40.0 -> "Otyłość II stopnia"
+    | _ -> "Otyłość III stopnia"
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Podaj wagę (kg): "
+    let weight = Console.ReadLine() |> float
+    
+    printf "Podaj wzrost (cm): "
+    let height = Console.ReadLine() |> float
+    
+    let userData = { Weight = weight; Height = height }
+    let bmi = calculateBMI userData
+    let category = categorizeBMI bmi
+    
+    printfn "Twoje BMI: %.2f" bmi
+    printfn "Kategoria BMI: %s" category
+    
+    0 // Kod zakończenia programu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+open System
+
+// Definicja kursów wymiany w stosunku do PLN
+let exchangeRates =
+    Map [
+        ("USD", 4.0)
+        ("EUR", 4.5)
+        ("GBP", 5.2)
+        ("PLN", 1.0)
+    ]
+
+// Funkcja konwertująca walutę
+let convertCurrency amount sourceCurrency targetCurrency =
+    match Map.tryFind sourceCurrency exchangeRates, Map.tryFind targetCurrency exchangeRates with
+    | Some sourceRate, Some targetRate -> (amount * targetRate) / sourceRate
+    | _ -> failwith "Nieobsługiwana waluta!"
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Podaj kwotę do przeliczenia: "
+    let amount = Console.ReadLine() |> float
+    
+    printf "Podaj walutę źródłową (USD, EUR, GBP, PLN): "
+    let sourceCurrency = Console.ReadLine().ToUpper()
+    
+    printf "Podaj walutę docelową (USD, EUR, GBP, PLN): "
+    let targetCurrency = Console.ReadLine().ToUpper()
+    
+    try
+        let convertedAmount = convertCurrency amount sourceCurrency targetCurrency
+        printfn "%.2f %s to %.2f %s" amount sourceCurrency convertedAmount targetCurrency
+    with
+        | ex -> printfn "Błąd: %s" ex.Message
+    
+    0 // Kod zakończenia programu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+open System
+open System.Text.RegularExpressions
+
+// Funkcja licząca słowa w tekście
+let countWords (text: string) =
+    let words = Regex.Matches(text, "\w+") |> Seq.cast<Match> |> Seq.map (fun m -> m.Value)
+    Seq.length words
+
+// Funkcja licząca liczbę znaków bez spacji
+let countCharsWithoutSpaces (text: string) =
+    text.Replace(" ", "").Length
+
+// Funkcja znajdująca najczęściej występujące słowo
+let mostFrequentWord (text: string) =
+    let words = Regex.Matches(text, "\w+") |> Seq.cast<Match> |> Seq.map (fun m -> m.Value.ToLower())
+    let wordCounts = words |> Seq.countBy id |> Seq.sortByDescending snd
+    match Seq.tryHead wordCounts with
+    | Some (word, _) -> word
+    | None -> "Brak słów"
+
+// Główna funkcja programu
+[<EntryPoint>]
+let main argv =
+    printf "Wprowadź tekst do analizy: "
+    let text = Console.ReadLine()
+    
+    let wordCount = countWords text
+    let charCount = countCharsWithoutSpaces text
+    let frequentWord = mostFrequentWord text
+    
+    printfn "Liczba słów: %d" wordCount
+    printfn "Liczba znaków (bez spacji): %d" charCount
+    printfn "Najczęściej występujące słowo: %s" frequentWord
+    
+    0 // Kod zakończenia programu
