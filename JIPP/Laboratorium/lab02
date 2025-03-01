@@ -1,1 +1,200 @@
+import re
+from collections import Counter
 
+stop_words = set([
+    "i", "a", "the", "to", "of", "in", "on", "for", "with", "at", "by", "an", "this", "that", "is", "was", "were", "are"
+])
+
+
+def analiza_tekstu(tekst):
+    akapity = tekst.split('\n')
+    liczba_akapitow = len(akapity)
+
+    zdania = re.split(r'[.!?]', tekst)
+    liczba_zdan = len([s for s in zdania if s.strip()])
+
+    slowa = re.findall(r'\b\w+\b', tekst.lower())
+    liczba_slow = len(slowa)
+
+    print(f'Liczba akapitów: {liczba_akapitow}')
+    print(f'Liczba zdań: {liczba_zdan}')
+    print(f'Liczba słów: {liczba_slow}')
+
+    return slowa
+
+def najczesciej_wystepujace_slowa(slowa):
+    przefiltrowane_slowa = [slowo for slowo in slowa if slowo not in stop_words]
+
+    zliczone_slowa = Counter(przefiltrowane_slowa)
+
+    najczestsze = zliczone_slowa.most_common(10)
+    print('Najczęściej występujące słowa (po wykluczeniu stop words):')
+    for slowo, liczba in najczestsze:
+        print(f'{slowo}: {liczba}')
+
+
+def transformacja_slow_zaczynajacych_sie_na_a(slowa):
+    przeksztalcone_slowa = [
+        slowo[::-1] if slowo.startswith('a') or slowo.startswith('A') else slowo
+        for slowo in slowa
+    ]
+    return przeksztalcone_slowa
+
+
+def main():
+    tekst = """
+    Ala ma kota, a kot ma Alę i żyć bez siebie nie mogą wcale
+    """
+
+    slowa = analiza_tekstu(tekst)
+    najczesciej_wystepujace_slowa(slowa)
+    przeksztalcone_slowa = transformacja_slow_zaczynajacych_sie_na_a(slowa)
+
+    print("\nPrzekształcone słowa:")
+    print(' '.join(przeksztalcone_slowa))
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import numpy as np
+
+
+def kompatybilnosc_dodawania(macierz1, macierz2):
+    return macierz1.shape == macierz2.shape
+
+
+def kompatybilnosc_mnozenia(macierz1, macierz2):
+    return macierz1.shape[1] == macierz2.shape[0]
+
+
+def wykonaj_operacje(operacja_str):
+    wynik = None
+
+    try:
+        eval(operacja_str)
+    except Exception as e:
+        print(f"Nie udało się wykonać operacji: {e}")
+
+    return wynik
+
+
+def main():
+    macierz1 = np.array([[1, 2], [3, 4]])
+    macierz2 = np.array([[5, 6], [7, 8]])
+
+    operacje = [
+        "wynik = macierz1 + macierz2",
+        "wynik = macierz1 @ macierz2",
+        "wynik = macierz1.T",
+    ]
+
+    for operacja in operacje:
+        print(f"Operacja: {operacja}")
+        if "macierz1 + macierz2" in operacja and kompatybilnosc_dodawania(macierz1, macierz2):
+            print("Wykonywanie operacji dodawania")
+            wynik = wykonaj_operacje(operacja)
+            print(f"Wynik: \n{wynik}")
+        elif "macierz1 @ macierz2" in operacja and kompatybilnosc_mnozenia(macierz1, macierz2):
+            print("Wykonywanie operacji mnożenia")
+            wynik = wykonaj_operacje(operacja)
+            print(f"Wynik: \n{wynik}")
+        elif "macierz1.T" in operacja:
+            print("Wykonywanie operacji transponowania")
+            wynik = wykonaj_operacje(operacja)
+            print(f"Wynik: \n{wynik}")
+        else:
+            print("Operacja nie jest kompatybilna")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import numpy as np
+from functools import reduce
+
+def dodaj_macierze(macierz1, macierz2):
+    if macierz1.shape == macierz2.shape:
+        return macierz1 + macierz2
+    else:
+        raise ValueError("Macierze muszą mieć te same wymiary do dodania")
+
+
+def mnoz_macierze(macierz1, macierz2):
+    if macierz1.shape[1] == macierz2.shape[0]:
+        return np.dot(macierz1, macierz2)
+    else:
+        raise ValueError(
+            "Liczba kolumn w pierwszej macierzy musi być równa liczbie wierszy w drugiej macierzy do mnożenia")
+
+
+def wykonaj_operacje(operacja, lista_macierzy):
+    if operacja == 'dodawanie':
+        return reduce(dodaj_macierze, lista_macierzy)
+    elif operacja == 'mnozenie':
+        return reduce(mnoz_macierze, lista_macierzy)
+    else:
+        raise ValueError("Brak takiej operacji")
+
+
+def main():
+    macierz1 = np.array([[1, 2], [3, 4]])
+    macierz2 = np.array([[5, 6], [7, 8]])
+    macierz3 = np.array([[9, 10], [11, 12]])
+
+    lista_macierzy = [macierz1, macierz2, macierz3]
+
+    operacja = input("Wybierz operację (dodawanie/mnozenie): ").lower()
+
+    try:
+        wynik = wykonaj_operacje(operacja, lista_macierzy)
+        print(f'Wynik operacji {operacja}:\n{wynik}')
+    except ValueError as e:
+        print(f"Błąd: {e}")
+
+
+if __name__ == "__main__":
+    main()
